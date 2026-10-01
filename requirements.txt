@@ -1,0 +1,18 @@
+# Job Board with ATS -- pinned dependencies.
+# Install with:  pip install -r requirements.txt
+
+Django==5.2.15
+
+# Resume text extraction (Phase 4)
+pdfplumber==0.11.10
+python-docx==1.2.0
+
+# Semantic matching engine (Phase 3).
+# sentence-transformers pulls in torch. Verified installed on Python 3.14:
+# torch 2.14.0+cpu (509 MB) and transformers (104 MB), so budget ~620 MB and
+# several minutes on a first install, plus an 87 MB model download on first use.
+sentence-transformers==6.1.0
+
+# Vector maths for cosine similarity, and image handling for company logos.
+numpy==2.5.1
+pillow==12.3.0

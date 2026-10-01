@@ -1,0 +1,62 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >>
+endobj
+4 0 obj
+<< /Length 677 >>
+stream
+BT
+/F1 11 Tf
+50 750 Td
+14 TL
+(Mohammed Osman) Tj
+T*
+(Backend Engineer - Khartoum, Sudan) Tj
+T*
+(mohammed.osman@example.com | +249 91 234 5678) Tj
+T*
+() Tj
+T*
+(EXPERIENCE) Tj
+T*
+(Built and maintained REST APIs for a billing platform using Django and Python) Tj
+T*
+(Designed relational schemas and tuned slow PostgreSQL queries with EXPLAIN) Tj
+T*
+(Wrote unit and integration tests achieving high coverage on the payments module) Tj
+T*
+(Automated deployment with Docker containers and GitHub Actions pipelines) Tj
+T*
+(Mentored two junior developers through code review and pair programming) Tj
+T*
+() Tj
+T*
+(EDUCATION) Tj
+T*
+(BSc Computer Science, University of Khartoum) Tj
+T*
+ET
+endstream
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000241 00000 n 
+0000000969 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+1039
+%%EOF

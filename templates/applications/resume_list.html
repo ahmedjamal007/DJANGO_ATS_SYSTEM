@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block title %}سيرتي الذاتية &middot; منصة التوظيف{% endblock %}
+
+{% block content %}
+<h1 class="text-2xl font-bold text-slate-900">السير الذاتية</h1>
+<p class="mt-1 text-sm text-slate-500">
+  السيرة المعتمدة هي التي تُقارن بالوظائف عند التقديم.
+</p>
+
+<div class="mt-6 rounded-lg border border-slate-200 bg-white p-6">
+  <h2 class="text-lg font-semibold text-slate-900">رفع سيرة ذاتية</h2>
+
+  <form method="post" action="{% url 'applications:resume_upload' %}"
+        enctype="multipart/form-data" class="mt-4 space-y-4" id="resume-upload-form">
+    {% csrf_token %}
+
+    {% for field in form %}
+      <div>
+        <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-slate-700">
+          {{ field.label }}
+        </label>
+        <div class="mt-1">{{ field }}</div>
+        {% if field.help_text %}
+          <p class="mt-1 text-xs text-slate-500">{{ field.help_text }}</p>
+        {% endif %}
+        {% for error in field.errors %}
+          <p class="mt-1 text-xs text-red-600">{{ error }}</p>
+        {% endfor %}
+      </div>
+    {% endfor %}
+
+    <div class="flex items-center gap-3">
+      <button type="submit" id="resume-upload-button"
+              class="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700
+                     disabled:cursor-not-allowed disabled:bg-slate-400">
+        رفع ومعالجة
+      </button>
+      <span id="resume-upload-status" class="hidden text-sm text-slate-500">
+        جارٍ المعالجة، قد تستغرق بضع ثوانٍ…
+      </span>
+    </div>
+  </form>
+</div>
+
+<div class="mt-6 overflow-hidden rounded-lg border border-slate-200 bg-white">
+  <table class="w-full text-sm">
+    <thead class="bg-slate-50 text-xs text-slate-500">
+      <tr>
+        <th class="px-4 py-3 text-start font-medium">الملف</th>
+        <th class="px-4 py-3 text-start font-medium">الحالة</th>
+        <th class="px-4 py-3 text-start font-medium">تاريخ الرفع</th>
+        <th class="px-4 py-3 text-start font-medium">إجراءات</th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-slate-100">
+      {% for resume in resumes %}
+        <tr>
+          <td class="px-4 py-3">
+            <span class="ltr font-medium text-slate-800">{{ resume.original_filename }}</span>
+            {% if resume.is_active %}
+              <span class="mr-2 rounded-full bg-indigo-50 px-2 py-0.5 text-xs text-indigo-700">معتمدة</span>
+            {% endif %}
+          </td>
+          <td class="px-4 py-3">
+            <span class="rounded-full px-2 py-0.5 text-xs
+              {% if resume.parse_status == 'done' %}bg-emerald-50 text-emerald-700
+              {% elif resume.parse_status == 'pending' %}bg-slate-100 text-slate-600
+              {% else %}bg-red-50 text-red-700{% endif %}">
+              {{ resume.get_parse_status_display }}
+            </span>
+            {% if resume.parse_error %}
+              <p class="mt-1 text-xs text-red-600">{{ resume.parse_error }}</p>
+            {% endif %}
+          </td>
+          <td class="px-4 py-3 text-slate-500">{{ resume.uploaded_at|date:"Y/m/d H:i" }}</td>
+          <td class="px-4 py-3">
+            <div class="flex items-center gap-3">
+              {% if resume.is_usable and not resume.is_active %}
+                <form method="post" action="{% url 'applications:resume_activate' resume.pk %}">
+                  {% csrf_token %}
+                  <button type="submit" class="text-indigo-600 hover:underline">اعتماد</button>
+                </form>
+              {% endif %}
+              <form method="post" action="{% url 'applications:resume_delete' resume.pk %}">
+                {% csrf_token %}
+                <button type="submit" class="text-red-600 hover:underline">حذف</button>
+              </form>
+            </div>
+          </td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="4" class="px-4 py-10 text-center text-slate-500">
+            لم ترفع أي سيرة ذاتية بعد.
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<script>
+  // Parsing runs inline and takes a few seconds. Disabling the button stops a
+  // second submission creating a duplicate resume row.
+  document.getElementById('resume-upload-form').addEventListener('submit', function () {
+    document.getElementById('resume-upload-button').disabled = true;
+    document.getElementById('resume-upload-status').classList.remove('hidden');
+  });
+</script>
+{% endblock %}

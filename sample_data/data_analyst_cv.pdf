@@ -1,0 +1,58 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >>
+endobj
+4 0 obj
+<< /Length 523 >>
+stream
+BT
+/F1 11 Tf
+50 750 Td
+14 TL
+(Fatima Ali) Tj
+T*
+(Data Analyst - Khartoum, Sudan) Tj
+T*
+() Tj
+T*
+(EXPERIENCE) Tj
+T*
+(Wrote complex SQL queries against a data warehouse to answer commercial questions) Tj
+T*
+(Built and maintained dashboards that the operations team relies on daily) Tj
+T*
+(Cleaned and reconciled messy source data before it reached reporting) Tj
+T*
+(Analysed subscriber churn with Python and pandas and presented the findings) Tj
+T*
+() Tj
+T*
+(EDUCATION) Tj
+T*
+(BSc Statistics, University of Khartoum) Tj
+T*
+ET
+endstream
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000241 00000 n 
+0000000815 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+885
+%%EOF
