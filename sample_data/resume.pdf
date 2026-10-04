@@ -1,0 +1,159 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R 5 0 R] /Count 2 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 7 0 R >> >> >>
+endobj
+4 0 obj
+<< /Length 2831 >>
+stream
+BT
+/F1 11 Tf
+50 750 Td
+14 TL
+(Nour Abdelrahman) Tj
+T*
+(Senior Software Engineer - Khartoum, Sudan) Tj
+T*
+(nour.abdelrahman@example.com | +249 91 555 0142) Tj
+T*
+() Tj
+T*
+(SUMMARY) Tj
+T*
+(Software engineer with seven years building and operating web systems for) Tj
+T*
+(telecom and financial services customers across Sudan and the Gulf. Most of) Tj
+T*
+(my work is server-side Python, with enough frontend and infrastructure to) Tj
+T*
+(carry a feature from database schema through to production.) Tj
+T*
+() Tj
+T*
+(EXPERIENCE) Tj
+T*
+() Tj
+T*
+(Senior Software Engineer, Sudatel Telecom - Khartoum \(2022 to present\)) Tj
+T*
+(Designed and built REST APIs with Django and Django REST Framework serving) Tj
+T*
+(around forty thousand daily active subscribers on the self-service portal) Tj
+T*
+(Rewrote the prepaid billing reconciliation job, cutting its nightly runtime) Tj
+T*
+(from just over four hours down to twenty minutes) Tj
+T*
+(Modelled the subscription and invoicing schema in PostgreSQL and added the) Tj
+T*
+(partial indexes that removed the three slowest queries from the dashboard) Tj
+T*
+(Introduced continuous integration with GitHub Actions running the full test) Tj
+T*
+(suite and linting on every pull request before merge) Tj
+T*
+(Led the migration from a single virtual machine to containerised deployments) Tj
+T*
+(with Docker Compose, including the rollback procedure) Tj
+T*
+(Mentored three junior engineers through structured code review) Tj
+T*
+() Tj
+T*
+(Software Engineer, Bank of Khartoum - Khartoum \(2019 to 2022\)) Tj
+T*
+(Built internal reporting services in Python consumed by the branch network) Tj
+T*
+(Wrote the integration layer against a legacy SOAP core banking system and) Tj
+T*
+(wrapped it behind a clean HTTP interface the rest of the estate could use) Tj
+T*
+(Added automated regression tests around the money transfer flow after a) Tj
+T*
+(production incident, raising coverage on that module from 20% to 85%) Tj
+T*
+(Ran database maintenance and query tuning on PostgreSQL replicas) Tj
+T*
+() Tj
+T*
+(Junior Developer, Freelance - Khartoum \(2018 to 2019\)) Tj
+T*
+(Delivered small business websites and a stock-tracking tool for a pharmacy) Tj
+T*
+(Built customer-facing pages with React and a Django backend) Tj
+T*
+() Tj
+T*
+(TECHNICAL SKILLS) Tj
+T*
+(Languages: Python, JavaScript, SQL, some Go) Tj
+T*
+(Frameworks: Django, Django REST Framework, Flask, React) Tj
+T*
+(Databases: PostgreSQL, SQLite, Redis for caching) Tj
+T*
+(Infrastructure: Docker, GitHub Actions, Nginx, Linux administration) Tj
+T*
+(Practices: automated testing, code review, continuous integration, Agile) Tj
+T*
+() Tj
+T*
+(EDUCATION) Tj
+T*
+(BSc Computer Science, University of Khartoum \(2018\)) Tj
+T*
+(Graduated with honours; final year project was a bus routing application) Tj
+T*
+() Tj
+T*
+(LANGUAGES) Tj
+T*
+(Arabic - native speaker) Tj
+T*
+ET
+endstream
+endobj
+5 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 6 0 R /Resources << /Font << /F1 7 0 R >> >> >>
+endobj
+6 0 obj
+<< /Length 137 >>
+stream
+BT
+/F1 11 Tf
+50 750 Td
+14 TL
+(English - full professional proficiency) Tj
+T*
+() Tj
+T*
+(REFERENCES) Tj
+T*
+(Available on request.) Tj
+T*
+ET
+endstream
+endobj
+7 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+xref
+0 8
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000121 00000 n 
+0000000247 00000 n 
+0000003130 00000 n 
+0000003256 00000 n 
+0000003444 00000 n 
+trailer
+<< /Size 8 /Root 1 0 R >>
+startxref
+3514
+%%EOF

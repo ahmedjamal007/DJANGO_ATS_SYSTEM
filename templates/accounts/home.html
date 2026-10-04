@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}منصة التوظيف{% endblock %}
+
+{% block content %}
+<div class="mx-auto max-w-2xl py-12 text-center">
+  <h1 class="text-4xl font-bold text-slate-900">منصة توظيف بنظام تتبع المتقدمين</h1>
+  <p class="mt-4 text-lg leading-relaxed text-slate-600">
+    المطابقة بين السيرة الذاتية والوظيفة تتم بالمعنى، لا بمطابقة الكلمات.
+    كل سيرة ذاتية وكل متطلب وظيفي يُحوَّل إلى متجه رقمي، وكل نتيجة تظهر
+    مرفقة بالسطر الذي استُخرجت منه من السيرة الذاتية.
+  </p>
+
+  <div class="mt-8 flex justify-center gap-3">
+    <a href="{% url 'accounts:register' %}"
+       class="rounded-md bg-indigo-600 px-5 py-2.5 font-medium text-white hover:bg-indigo-700">
+      إنشاء حساب
+    </a>
+    <a href="{% url 'accounts:login' %}"
+       class="rounded-md border border-slate-300 bg-white px-5 py-2.5 font-medium text-slate-700 hover:bg-slate-50">
+      تسجيل الدخول
+    </a>
+  </div>
+
+  <p class="mt-6 text-sm text-slate-400">
+    تُكتب السير الذاتية وأوصاف الوظائف باللغة الإنجليزية.
+  </p>
+</div>
+{% endblock %}

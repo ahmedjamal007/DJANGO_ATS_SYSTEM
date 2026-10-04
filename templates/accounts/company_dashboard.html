@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}لوحة تحكم الشركة &middot; منصة التوظيف{% endblock %}
+
+{% block content %}
+<div class="flex flex-wrap items-start justify-between gap-4">
+  <div>
+    <h1 class="text-2xl font-bold text-slate-900">لوحة تحكم الشركة</h1>
+    <p class="mt-1 text-sm text-slate-500">{{ profile.name }}</p>
+  </div>
+  <a href="{% url 'jobs:create' %}"
+     class="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700">
+    نشر وظيفة جديدة
+  </a>
+</div>
+
+<div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+  <div class="rounded-lg border border-slate-200 bg-white p-5">
+    <p class="text-xs font-medium text-slate-500">إجمالي الوظائف</p>
+    <p class="ltr mt-1 text-3xl font-bold text-slate-900">{{ total_jobs }}</p>
+  </div>
+  <div class="rounded-lg border border-slate-200 bg-white p-5">
+    <p class="text-xs font-medium text-slate-500">الوظائف المفتوحة</p>
+    <p class="ltr mt-1 text-3xl font-bold text-emerald-700">{{ open_jobs }}</p>
+  </div>
+  <div class="rounded-lg border border-slate-200 bg-white p-5">
+    <p class="text-xs font-medium text-slate-500">إجمالي الطلبات</p>
+    <p class="ltr mt-1 text-3xl font-bold text-slate-900">{{ total_applications }}</p>
+  </div>
+  <div class="rounded-lg border border-indigo-200 bg-indigo-50 p-5">
+    <p class="text-xs font-medium text-indigo-700">طلبات هذا الأسبوع</p>
+    <p class="ltr mt-1 text-3xl font-bold text-indigo-900">{{ new_applications }}</p>
+  </div>
+</div>
+
+{% if total_applications %}
+  <div class="mt-4 rounded-lg border border-slate-200 bg-white p-5">
+    <h2 class="text-sm font-semibold text-slate-700">توزيع المتقدمين على المراحل</h2>
+    <div class="mt-3 flex flex-wrap gap-2">
+      {% for entry in stage_counts %}
+        <span class="rounded-full border border-slate-200 px-3 py-1 text-xs text-slate-600">
+          {{ entry.label }}: <span class="ltr font-semibold">{{ entry.total }}</span>
+        </span>
+      {% endfor %}
+    </div>
+  </div>
+{% endif %}
+
+<h2 class="mt-8 text-lg font-semibold text-slate-900">الوظائف المنشورة</h2>
+<div class="mt-3 overflow-hidden rounded-lg border border-slate-200 bg-white">
+  <table class="w-full text-sm">
+    <thead class="bg-slate-50 text-xs text-slate-500">
+      <tr>
+        <th class="px-4 py-3 text-start font-medium">المسمى الوظيفي</th>
+        <th class="px-4 py-3 text-start font-medium">الحالة</th>
+        <th class="px-4 py-3 text-start font-medium">المتقدمون</th>
+        <th class="px-4 py-3 text-start font-medium">هذا الأسبوع</th>
+        <th class="px-4 py-3 text-start font-medium">إجراءات</th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-slate-100">
+      {% for job in jobs %}
+        <tr>
+          <td class="px-4 py-3">
+            <a href="{{ job.get_absolute_url }}" class="ltr font-medium text-slate-800 hover:text-indigo-600">
+              {{ job.title }}
+            </a>
+            <p class="mt-0.5 text-xs text-slate-400">{{ job.location }}</p>
+          </td>
+          <td class="px-4 py-3">
+            <span class="rounded-full px-2 py-0.5 text-xs
+              {% if job.status == 'open' %}bg-emerald-50 text-emerald-700
+              {% elif job.status == 'draft' %}bg-slate-100 text-slate-600
+              {% else %}bg-red-50 text-red-700{% endif %}">
+              {{ job.get_status_display }}
+            </span>
+          </td>
+          <td class="ltr px-4 py-3 font-semibold text-slate-800">{{ job.application_count }}</td>
+          <td class="ltr px-4 py-3 text-slate-500">
+            {% if job.new_this_week %}+{{ job.new_this_week }}{% else %}—{% endif %}
+          </td>
+          <td class="px-4 py-3">
+            <a href="{% url 'jobs:pipeline' job.pk %}" class="text-indigo-600 hover:underline">المسار</a>
+            <a href="{% url 'jobs:update' job.pk %}" class="mr-3 text-slate-500 hover:underline">تعديل</a>
+          </td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="5" class="px-4 py-12 text-center">
+            <p class="text-sm text-slate-500">لم تنشر أي وظيفة بعد.</p>
+            <a href="{% url 'jobs:create' %}"
+               class="mt-4 inline-block rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700">
+              نشر أول وظيفة
+            </a>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

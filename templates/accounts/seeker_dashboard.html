@@ -1,0 +1,169 @@
+{% extends "base.html" %}
+
+{% block title %}لوحة التحكم &middot; منصة التوظيف{% endblock %}
+
+{% block content %}
+<div class="flex flex-wrap items-start justify-between gap-4">
+  <div>
+    <h1 class="text-2xl font-bold text-slate-900">لوحة التحكم</h1>
+    <p class="mt-1 text-sm text-slate-500">{{ profile.full_name }}</p>
+  </div>
+  <a href="{% url 'jobs:list' %}"
+     class="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700">
+    تصفح الوظائف
+  </a>
+</div>
+
+<div class="mt-6 grid gap-4 sm:grid-cols-3">
+  <div class="rounded-lg border border-slate-200 bg-white p-5">
+    <p class="text-xs font-medium text-slate-500">إجمالي الطلبات</p>
+    <p class="ltr mt-1 text-3xl font-bold text-slate-900">{{ total_applications }}</p>
+  </div>
+  <div class="rounded-lg border border-slate-200 bg-white p-5">
+    <p class="text-xs font-medium text-slate-500">طلبات قيد النظر</p>
+    <p class="ltr mt-1 text-3xl font-bold text-indigo-700">{{ active_applications }}</p>
+  </div>
+  <div class="rounded-lg border border-slate-200 bg-white p-5">
+    <p class="text-xs font-medium text-slate-500">وصلت للمقابلة أو أبعد</p>
+    <p class="ltr mt-1 text-3xl font-bold text-emerald-700">{{ interview_count }}</p>
+  </div>
+</div>
+
+{# ---------------- Resume ---------------- #}
+<div class="mt-6 rounded-lg border border-slate-200 bg-white p-6">
+  <div class="flex flex-wrap items-center justify-between gap-3">
+    <h2 class="text-lg font-semibold text-slate-900">السيرة الذاتية المعتمدة</h2>
+    <a href="{% url 'applications:resume_list' %}" class="text-sm text-indigo-600 hover:underline">
+      إدارة السير الذاتية
+    </a>
+  </div>
+
+  {% if active_resume %}
+    <p class="ltr mt-3 text-sm text-slate-700">{{ active_resume.original_filename }}</p>
+    <p class="mt-1 text-xs text-slate-400">
+      رُفعت في {{ active_resume.uploaded_at|date:"Y/m/d" }} — {{ resumes|length }} ملف مرفوع
+    </p>
+  {% else %}
+    <div class="mt-4 rounded-md border border-amber-200 bg-amber-50 px-4 py-3">
+      <p class="text-sm text-amber-800">
+        لا توجد سيرة ذاتية معتمدة. ارفع واحدة حتى تتمكن من التقديم ورؤية الوظائف المقترحة.
+      </p>
+      <a href="{% url 'applications:resume_list' %}"
+         class="mt-3 inline-block rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700">
+        رفع سيرة ذاتية
+      </a>
+    </div>
+  {% endif %}
+</div>
+
+{# ---------------- Recommended jobs ---------------- #}
+{% if active_resume %}
+  <div class="mt-6 rounded-lg border border-slate-200 bg-white p-6">
+    <h2 class="text-lg font-semibold text-slate-900">وظائف مقترحة لك</h2>
+    <p class="mt-1 text-sm text-slate-500">
+      مرتّبة بنفس طريقة حساب النتيجة التي تراها الشركات، ولا تشمل وظائف تقدّمت لها.
+    </p>
+
+    <div class="mt-4 space-y-2">
+      {% for job, result in recommendations %}
+        <a href="{{ job.get_absolute_url }}"
+           class="flex flex-wrap items-center justify-between gap-3 rounded-md border border-slate-200 p-4 hover:bg-slate-50">
+          <div>
+            <p class="ltr font-medium text-slate-900">{{ job.title }}</p>
+            <p class="mt-0.5 text-xs text-slate-500">
+              {{ job.company.name }} — {{ job.location }}
+            </p>
+          </div>
+          <div class="text-end">
+            <span class="ltr rounded px-2 py-0.5 text-sm font-semibold
+              {% if result.score >= 0.6 %}bg-emerald-50 text-emerald-700
+              {% elif result.score >= 0.4 %}bg-amber-50 text-amber-700
+              {% else %}bg-slate-100 text-slate-600{% endif %}">
+              {{ result.score|floatformat:"2u" }}
+            </span>
+            <p class="mt-1 text-xs text-slate-400">
+              {{ result.skill_results|length }} مهارة مطلوبة
+            </p>
+          </div>
+        </a>
+      {% empty %}
+        <p class="py-6 text-center text-sm text-slate-400">
+          لا توجد وظائف مفتوحة لاقتراحها حاليًا.
+        </p>
+      {% endfor %}
+    </div>
+  </div>
+{% endif %}
+
+{# ---------------- My applications, with their timelines ---------------- #}
+<div class="mt-6 rounded-lg border border-slate-200 bg-white p-6">
+  <h2 class="text-lg font-semibold text-slate-900">طلباتي</h2>
+
+  <div class="mt-4 space-y-3">
+    {% for application in applications %}
+      <div class="rounded-md border border-slate-200 p-4">
+        <div class="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <a href="{{ application.job.get_absolute_url }}"
+               class="ltr font-medium text-slate-900 hover:text-indigo-600">
+              {{ application.job.title }}
+            </a>
+            <p class="mt-0.5 text-xs text-slate-500">
+              {{ application.job.company.name }} — قُدّم في {{ application.applied_at|date:"Y/m/d" }}
+            </p>
+          </div>
+          <span class="rounded-full px-3 py-1 text-xs font-medium
+            {% if application.stage == 'hired' %}bg-emerald-50 text-emerald-700
+            {% elif application.stage == 'rejected' %}bg-red-50 text-red-700
+            {% elif application.stage == 'applied' %}bg-slate-100 text-slate-600
+            {% else %}bg-indigo-50 text-indigo-700{% endif %}">
+            {{ application.get_stage_display }}
+          </span>
+        </div>
+
+        <ol class="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 border-t border-slate-100 pt-3 text-xs text-slate-400">
+          {% for entry in application.history.all %}
+            <li class="flex items-center gap-2">
+              {% if not forloop.first %}<span class="text-slate-300">←</span>{% endif %}
+              <span>{{ entry.get_to_stage_display }}</span>
+              <span class="text-slate-300">{{ entry.created_at|date:"m/d" }}</span>
+            </li>
+          {% endfor %}
+        </ol>
+      </div>
+    {% empty %}
+      <div class="rounded-md border border-dashed border-slate-300 p-10 text-center">
+        <p class="text-sm text-slate-500">لم تتقدم لأي وظيفة بعد.</p>
+        <a href="{% url 'jobs:list' %}"
+           class="mt-4 inline-block rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700">
+          تصفح الوظائف
+        </a>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+{# ---------------- Saved jobs ---------------- #}
+<div class="mt-6 rounded-lg border border-slate-200 bg-white p-6">
+  <h2 class="text-lg font-semibold text-slate-900">الوظائف المحفوظة</h2>
+
+  <div class="mt-4 space-y-2">
+    {% for saved in saved_jobs %}
+      <a href="{{ saved.job.get_absolute_url }}"
+         class="flex flex-wrap items-center justify-between gap-3 rounded-md border border-slate-200 p-4 hover:bg-slate-50">
+        <div>
+          <p class="ltr font-medium text-slate-900">{{ saved.job.title }}</p>
+          <p class="mt-0.5 text-xs text-slate-500">
+            {{ saved.job.company.name }} — {{ saved.job.location }}
+          </p>
+        </div>
+        <span class="ltr text-xs text-slate-400">{{ saved.job.salary_display }}</span>
+      </a>
+    {% empty %}
+      <p class="py-6 text-center text-sm text-slate-400">
+        لم تحفظ أي وظيفة بعد. استخدم زر «حفظ» في صفحة الوظيفة.
+      </p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,18 @@
+# Normalise line endings for text, and leave binaries alone.
+* text=auto
+
+# The sample resumes must survive a checkout byte for byte. The hand-built
+# PDFs in sample_data/ contain no null bytes, so Git's heuristic classifies
+# them as text and would rewrite their line endings on a Windows clone --
+# which shifts the xref byte offsets and corrupts the file.
+*.pdf  binary
+*.docx binary
+*.xlsx binary
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.ico  binary
+
+# Keep shell scripts LF so they run on Linux regardless of checkout platform.
+*.sh text eol=lf

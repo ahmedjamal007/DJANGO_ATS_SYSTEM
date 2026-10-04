@@ -1,0 +1,167 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  {# Read by the fetch() calls on pages that update in place. #}
+  <meta name="csrf-token" content="{{ csrf_token }}">
+  <title>{% block title %}منصة وظيفتك{% endblock %}</title>
+
+  {# Tailwind from a CDN on purpose: no npm, no build step, no node_modules. #}
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  {% comment %}
+    The default sans-serif stack renders Arabic poorly. Cairo is built for
+    Arabic user interfaces and carries Latin glyphs too, so English content --
+    job titles, resume text -- stays in the same family.
+  {% endcomment %}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: { extend: { fontFamily: { sans: ['Cairo', 'system-ui', 'sans-serif'] } } }
+    };
+  </script>
+
+  {% comment %}
+    The Tailwind CDN cannot style widgets Django renders itself, so the few
+    form controls in the project are covered here once instead of in each
+    template. This is the only stylesheet in the project.
+  {% endcomment %}
+  <style>
+    input[type="text"], input[type="email"], input[type="password"],
+    input[type="url"], input[type="number"], textarea, select {
+      width: 100%;
+      border-radius: 0.375rem;
+      border: 1px solid rgb(203 213 225);
+      padding: 0.5rem 0.75rem;
+      font-size: 0.875rem;
+      background-color: white;
+      font-family: inherit;
+    }
+    input:focus, textarea:focus, select:focus {
+      outline: 2px solid rgb(99 102 241);
+      outline-offset: -1px;
+    }
+    input[type="radio"], input[type="checkbox"] { width: auto; }
+    /* Logical property, not padding-left: this page is right-to-left. */
+    ul.errorlist {
+      color: rgb(220 38 38);
+      font-size: 0.75rem;
+      list-style: none;
+      padding-inline-start: 0;
+      margin: 0.25rem 0 0 0;
+    }
+    /* Email addresses and other Latin text keep left-to-right order inside
+       an RTL page. Without this, punctuation drifts to the wrong end. */
+    .ltr { direction: ltr; unicode-bidi: isolate; }
+  </style>
+</head>
+<body class="min-h-screen bg-slate-50 font-sans text-slate-800">
+
+  <nav class="border-b border-slate-200 bg-white">
+    <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
+      <a href="{% url 'accounts:home' %}" class="text-lg font-semibold text-slate-900">
+        منصة <span class="text-indigo-600">التوظيف</span>
+      </a>
+
+      <div class="flex items-center gap-4 text-sm">
+        <a href="{% url 'jobs:list' %}" class="text-slate-600 hover:text-indigo-600">الوظائف</a>
+
+        {% if user.is_authenticated %}
+          {% if user.is_company %}
+            <a href="{% url 'jobs:my_jobs' %}" class="text-slate-600 hover:text-indigo-600">وظائفي</a>
+            <a href="{% url 'accounts:company_dashboard' %}" class="text-slate-600 hover:text-indigo-600">لوحة التحكم</a>
+          {% else %}
+            <a href="{% url 'applications:my_applications' %}" class="text-slate-600 hover:text-indigo-600">طلباتي</a>
+            <a href="{% url 'applications:resume_list' %}" class="text-slate-600 hover:text-indigo-600">سيرتي الذاتية</a>
+            <a href="{% url 'accounts:seeker_dashboard' %}" class="text-slate-600 hover:text-indigo-600">لوحة التحكم</a>
+          {% endif %}
+
+          {% comment %}
+            The badge is a plain link to a plain page -- no dropdown. Its
+            count is refreshed by the polling script at the bottom of this
+            file.
+          {% endcomment %}
+          <a href="{% url 'notifications:list' %}" id="notification-badge"
+             class="relative text-slate-600 hover:text-indigo-600">
+            الإشعارات
+            <span id="notification-count"
+                  class="ltr hidden rounded-full bg-red-600 px-1.5 py-0.5 text-xs font-semibold text-white"></span>
+          </a>
+
+          <span class="ltr hidden text-slate-400 sm:inline">{{ user.email }}</span>
+
+          {# LogoutView requires POST from Django 5, so this is a form, not a link. #}
+          <form method="post" action="{% url 'accounts:logout' %}">
+            {% csrf_token %}
+            <button type="submit" class="text-slate-600 hover:text-indigo-600">تسجيل الخروج</button>
+          </form>
+        {% else %}
+          <a href="{% url 'accounts:login' %}" class="text-slate-600 hover:text-indigo-600">تسجيل الدخول</a>
+          <a href="{% url 'accounts:register' %}"
+             class="rounded-md bg-indigo-600 px-3 py-1.5 font-medium text-white hover:bg-indigo-700">
+            إنشاء حساب
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  </nav>
+
+  <main class="mx-auto max-w-6xl px-4 py-8">
+    {% if messages %}
+      <div class="mb-6 space-y-2">
+        {% for message in messages %}
+          <div class="rounded-md border px-4 py-3 text-sm
+            {% if message.tags == 'error' %}border-red-200 bg-red-50 text-red-800
+            {% elif message.tags == 'warning' %}border-amber-200 bg-amber-50 text-amber-800
+            {% else %}border-emerald-200 bg-emerald-50 text-emerald-800{% endif %}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {% block content %}{% endblock %}
+  </main>
+
+  {% if user.is_authenticated %}
+  <script>
+    // Notifications are delivered by polling, not websockets. A job board's
+    // notifications are not time-critical, and this costs nothing to deploy
+    // where Channels would need an ASGI server and a message broker.
+    (function () {
+      const badge = document.getElementById('notification-count');
+      const every = {{ poll_seconds }} * 1000;
+
+      async function refresh() {
+        // Skip while the tab is in the background: a user who is not looking
+        // does not need the count, and this stops a forgotten tab polling
+        // the server all day.
+        if (document.visibilityState !== 'visible') return;
+        try {
+          const response = await fetch('{% url "notifications:poll" %}', {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+          });
+          const data = await response.json();
+          badge.textContent = data.unread_count;
+          badge.classList.toggle('hidden', data.unread_count === 0);
+        } catch (error) {
+          // A failed poll is not worth telling the user about; the next one
+          // in twenty seconds will most likely succeed.
+        }
+      }
+
+      refresh();
+      setInterval(refresh, every);
+      // Catch up as soon as the tab comes back to the foreground.
+      document.addEventListener('visibilitychange', refresh);
+    })();
+  </script>
+  {% endif %}
+
+  {% block extra_js %}{% endblock %}
+</body>
+</html>
